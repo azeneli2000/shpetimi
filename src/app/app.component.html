@@ -1,0 +1,184 @@
+<mat-tab-group>
+    <mat-tab label="Marrje">
+            <ng-template matTabContent>
+        <form [formGroup]="service.formMarre" class="normal-form">
+            <div class="controls-conteiner">
+                <input type="hidden" name="Skey">
+                <!-- marrje -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Merr</mat-label>
+                    <input type="number" formControlName="SasiaMarre" matInput [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="service.formMarre.controls['SasiaMarre'].errors?.required">
+                        Sasia marre <strong>e detyruesheme</strong>
+                    </mat-error>
+                </mat-form-field>
+                <!-- monedhaMarrje -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Valuta</mat-label>
+                    <mat-select formControlName="MonedhaMarre">
+                        <mat-option *ngFor="let m of Monedhat" [value]="m.value">
+                            {{m.value}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="service.formMarre.controls['MonedhaMarre'].errors?.required">
+                        Valuta <strong>e detyruesheme</strong>
+                    </mat-error>
+                </mat-form-field>
+                <!-- Koment marrje -->
+                <mat-form-field appearance="outline">
+                    <mat-label>Koment marrje</mat-label>
+                    <input formControlName="KomentMarre" matInput [errorStateMatcher]="matcher">
+                    <mat-error *ngIf="service.formMarre.controls['KomentMarre'].errors?.required">
+                        Komenti <strong>i detyrueshem</strong>
+                    </mat-error>
+                </mat-form-field>
+                <br>
+                <button mat-raised-button type="submit" color="primary" [disabled]="service.formMarre.invalid" (click)="onSubmitMarre()">Merr</button>
+            </div>
+        </form>
+
+
+        <div class="search-div">
+            <mat-form-field class="search-form-field" floatLabel="never">
+                <input matInput [(ngModel)]="searchKey" placeholder="Kerko.." autocomplete="off" (keyup)="applyFilterMarre()">
+                <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClearMarre()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+
+        <mat-card>
+  
+                <div *ngIf="marreEUR>0 && marreEUR != 'NaN'" style="display: inline;color : #F44336"><span style="color:#303F9F"> </span> <span class="mbeturSpan">
+                    {{marreEUR|currency : 'EUR':'symbol':'1.0-0'}}</span></div>
+                <div *ngIf="marreLEK>0 && marreLEK != 'NaN'" style="display: inline;color:#303F9F"><span style="color:#303F9F"></span> <span class="mbeturSpan">
+                    {{marreLEK|currency : 'LEK':'symbol':'1.0-0'}}</span></div>
+             
+              </mat-card>
+
+        <div class="mat-elevation-z8">
+            <mat-table [dataSource]="listDataMarre" matSort>
+                <ng-container matColumnDef="DataMarre">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.Data|date:'dd/MM/yyyy' }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="SasiaMarre">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Marre</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.SasiaMarre | currency : element.MonedhaMarre : 'symbol' : '1.0-0'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="KomentMarre">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Koment</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.KomentMarre }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="Actions">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button mat-icon-button color="warn" (click)="onDeleteMarre(row.$key)">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumnsMarre"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumnsMarre;"></mat-row>
+
+            </mat-table>
+        </div>
+
+</ng-template>
+
+
+    </mat-tab>
+    <mat-tab label="Dhenie">
+        <ng-template matTabContent>
+            <form [formGroup]="service.formDhene" class="normal-form">
+                <div class="controls-conteiner">
+                    <!-- dhenie -->
+                    <mat-form-field appearance="outline">
+                        <mat-label>Jep</mat-label>
+                        <input type="number" formControlName="SasiaDhene" matInput [errorStateMatcher]="matcher">
+                        <mat-error *ngIf="service.formDhene.controls['SasiaDhene'].errors?.required">
+                            Sasia e dhene <strong>e detyruesheme</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- monedhaMarrje -->
+                    <mat-form-field appearance="outline">
+                        <mat-label>Valuta</mat-label>
+                        <mat-select formControlName="MonedhaDhene">
+                            <mat-option *ngFor="let m of Monedhat" [value]="m.value">
+                                {{m.value}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="service.formDhene.controls['MonedhaDhene'].errors?.required">
+                            Valuta <strong>e detyruesheme</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <!-- Koment marrje -->
+                    <mat-form-field appearance="outline">
+                        <mat-label>Koment dhenie</mat-label>
+                        <input formControlName="KomentDhene" matInput [errorStateMatcher]="matcher">
+                        <mat-error *ngIf="service.formDhene.controls['KomentDhene'].errors?.required">
+                            Komenti <strong>i detyrueshem</strong>
+                        </mat-error>
+                    </mat-form-field><br>
+                    <button mat-raised-button type="submit" color="warn" [disabled]="service.formDhene.invalid" (click)="onSubmitDhene()">Jep</button>
+                </div>
+            </form>
+
+            <div class="search-div">
+                    <mat-form-field class="search-form-field" floatLabel="never">
+                        <input matInput [(ngModel)]="searchKey" placeholder="Kerko.." autocomplete="off" (keyup)="applyFilterDhene()">
+                        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClearDhene()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+        
+                <mat-card>
+  
+                        <div *ngIf="dheneEUR>0 && dheneEUR != 'NaN'" style="display: inline;color : #F44336"><span style="color:#303F9F"> </span> <span class="mbeturSpan">
+                            {{dheneEUR|currency : 'EUR':'symbol':'1.0-0'}}</span></div>
+                        <div *ngIf="dheneLEK>0 && dheneLEK != 'NaN'" style="display: inline;color:#303F9F"><span style="color:#303F9F"></span> <span class="mbeturSpan">
+                            {{dheneLEK|currency : 'LEK':'symbol':'1.0-0'}}</span></div>
+                     
+                      </mat-card>
+
+                <div class="mat-elevation-z8">
+                    <mat-table [dataSource]="listDataDhene" matSort>
+                        <ng-container matColumnDef="DataDhene">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.Data|date:'dd/MM/yyyy' }}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="SasiaDhene">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Dhene</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.SasiaDhene | currency : element.MonedhaDhene : 'symbol' : '1.0-0'}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="KomentDhene">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Koment</mat-header-cell>
+                            <mat-cell *matCellDef="let element">{{element.KomentDhene }}</mat-cell>
+                        </ng-container>
+        
+                        <ng-container matColumnDef="Actions">
+                            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                            <mat-cell *matCellDef="let row">
+        
+                                <button mat-icon-button color="warn" (click)="onDeleteDhene(row.$key)">
+                                    <mat-icon>delete_outline</mat-icon>
+                                </button>
+        
+                            </mat-cell>
+                        </ng-container>
+                        <mat-header-row *matHeaderRowDef="displayedColumnsDhene"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumnsDhene;"></mat-row>
+                    </mat-table>
+                </div>        
+        </ng-template>
+    </mat-tab>
+    <mat-tab label="Diferenca">
+        <ng-template matTabContent>
+      Picka e sateme :)
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
